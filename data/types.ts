@@ -1,4 +1,6 @@
 export interface CodeBlock {
+    id: string;
+    
     /**
      * 查询名称（用户自定义）
      */
