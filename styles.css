@@ -5,3 +5,43 @@ select {
     background: var(--background-primary);
     color: var(--text-normal);
 }
+
+/* 查询项容器 */
+.codeblock-query-item {
+    margin-bottom: 1.5rem;
+    padding: 0.8rem;
+    background-color: var(--background-secondary);
+    border-radius: 6px;
+}
+
+/* 头部布局 */
+.codeblock-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0.8rem;
+}
+
+/* 名称输入框容器自适应宽度 */
+.codeblock-header>div:first-child {
+    flex-grow: 1;
+    margin-right: auto;
+}
+
+/* 代码块输入区域 */
+.codeblock-content {
+    width: 100%;
+}
+
+/* 调整文本域样式 */
+.codeblock-content textarea {
+    width: 100%;
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* 分隔线样式 */
+.codeblock-divider {
+    margin: 1rem 0;
+    border-color: var(--background-modifier-border-hover);
+}

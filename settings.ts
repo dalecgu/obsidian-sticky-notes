@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting, Notice, debounce } from 'obsidian';
+import { App, PluginSettingTab, Setting, Notice, debounce, TextComponent, TextAreaComponent, ButtonComponent } from 'obsidian';
 import { CodeBlockViewPlugin } from './main';
 import { CodeBlock, CodeBlockViewSettings } from './data/types';
 
@@ -55,52 +55,45 @@ export class CodeBlockViewSettingTab extends PluginSettingTab {
     private renderQueries(): void {
         this.queriesContainer.empty();
         this.plugin.settings.queries.forEach((query: CodeBlock) => {
-            const setting = new Setting(this.queriesContainer)
-                .setName(query.id)
-                .setDesc("please input name and code block")
-                .addText(text => {
-                    text
-                        .setPlaceholder('Code block name')
-                        .setValue(query.name)
-                        .onChange(debounce(async (value) => {
-                            if (!value.trim()) {
-                                new Notice("名称不能为空");
-                                return;
-                            }
-                            query.name = value;
-                            await this.plugin.saveSettings();
-                        }, 500));
-                    text.inputEl.style.width = "100%";
+
+            const queryItemEl = this.queriesContainer.createDiv('codeblock-query-item');
+
+            // 头部：名称和删除按钮
+            const headerEl = queryItemEl.createDiv('codeblock-header');
+            // 名称输入框
+            const nameInput = new TextComponent(headerEl)
+                .setPlaceholder('Code block name')
+                .setValue(query.name)
+                .onChange(debounce(async (value) => {
+                    if (!value.trim()) {
+                        new Notice("Name is empty!");
+                        return;
+                    }
+                    query.name = value;
+                    await this.plugin.saveSettings();
+                }, 500));
+            // 删除按钮
+            const deleteButton = new ButtonComponent(headerEl)
+                .setIcon('trash')
+                .setTooltip('Delete')
+                .onClick(async () => {
+                    this.plugin.settings.queries = this.plugin.settings.queries.filter((q: CodeBlock) => q.id !== query.id);
+                    await this.plugin.saveSettings();
+                    this.renderQueries();
+                });
+            // 代码块输入区域
+            const codeBlockEl = queryItemEl.createDiv('codeblock-content');
+            const blockInput = new TextAreaComponent(codeBlockEl)
+                .setPlaceholder('Code')
+                .setValue(query.code)
+                .then(textArea => {
+                    textArea.inputEl.rows = 8;
+                    textArea.inputEl.style.width = '100%';
                 })
-                .addTextArea(text => text
-                    .setPlaceholder('Code')
-                    .setValue(query.code)
-                    .then(textArea => {
-                        textArea.inputEl.style.width = "100%";
-                        textArea.inputEl.style.margin = "0";
-                        textArea.inputEl.style.padding = "0";
-                        textArea.inputEl.rows = 10;
-                    })
-                    .onChange(debounce(async (value) => {
-                        query.code = value;
-                        await this.plugin.saveSettings();
-                    }, 500)))
-                .addExtraButton(btn => btn
-                    .setIcon('trash')
-                    .onClick(async () => {
-                        this.plugin.settings.queries = this.plugin.settings.queries.filter((q: CodeBlock) => q.id !== query.id);
-                        await this.plugin.saveSettings();
-                        this.renderQueries();
-                    }));
-
-            setting.controlEl.style.flexDirection = 'column';
-            setting.controlEl.style.alignItems = 'flex-start';
-            setting.controlEl.style.gap = '8px';
-            setting.controlEl.querySelectorAll('.setting-item-control').forEach(el => {
-                (el as HTMLElement).style.width = '100%';
-            });
-
-            setting.settingEl.createEl('hr', { cls: 'codeblock-divider' });
+                .onChange(debounce(async (value) => {
+                    query.code = value;
+                    await this.plugin.saveSettings();
+                }, 500));
         });
     }
 }
