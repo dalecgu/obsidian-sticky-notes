@@ -21,30 +21,13 @@ export class StickyNotesSettingTab extends PluginSettingTab {
         const { containerEl } = this;
         containerEl.empty();
 
-        const generateUniqueName = (notes: StickyNotesNote[]) => {
-            const baseName = "Sticky Note";
-            let maxNumber = 0;
-
-            notes.forEach(q => {
-                const match = q.name.match(new RegExp(`${baseName} (\\d+)`));
-                if (match) maxNumber = Math.max(maxNumber, parseInt(match[1]));
-            });
-
-            return `${baseName} ${maxNumber + 1}`;
-        };
-
         new Setting(containerEl)
             .setName('Manage Sticky Notes')
             .setDesc('Add/Edit sticky notes')
             .addButton(button => button
                 .setButtonText('Add New')
                 .onClick(() => {
-                    this.plugin.settings.notes.push({
-                        id: crypto.randomUUID(),
-                        name: generateUniqueName(this.plugin.settings.notes),
-                        content: ''
-                    });
-                    this.plugin.saveSettings();
+                    this.plugin.addNote('');
                     this.display();
                 }));
 

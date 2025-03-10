@@ -1,7 +1,7 @@
-import { Plugin, WorkspaceLeaf } from 'obsidian';
+import { Plugin, WorkspaceLeaf, Editor, Notice } from 'obsidian';
 import { StickyNotesSettingTab, DEFAULT_SETTINGS } from './settings';
 import { StickyNotesSelectorView, STICKY_NOTES_SELECTOR_VIEW_TYPE } from './view';
-import { StickyNotesSettings } from './data/types';
+import { StickyNotesNote, StickyNotesSettings } from './data/types';
 
 export default class StickyNotesPlugin extends Plugin {
 	settings: StickyNotesSettings;
@@ -31,9 +31,42 @@ export default class StickyNotesPlugin extends Plugin {
 			id: "open-sticky-notes-selector-view",
 			name: "Open Sticky Notes Selector View",
 			callback: () => {
-			  this.activateView();
+				this.activateView();
 			},
-		  });
+		});
+
+		this.addCommand({
+			id: "save-selected-content-as-sticky-note",
+			name: "Save Selected Content As Sticky Note",
+			editorCheckCallback: (checking: Boolean, editor: Editor) => {
+				const selection = editor.getSelection();
+				if (selection) {
+					if (!checking) {
+						this.addNote(selection)
+						new Notice('Sticky Note: Saved!');
+					}
+					return true;
+				}
+				return false;
+			}
+		});
+
+		this.registerEvent(
+			this.app.workspace.on('editor-menu', (menu, editor, view) => {
+				const selection = editor.getSelection();
+				if (selection && selection.trim().length > 0) {
+					menu.addItem((item) => {
+						item
+							.setTitle("Save Selected Content As Sticky Note")
+							.setIcon("save")
+							.onClick(async () => {
+								await this.addNote(selection);
+								new Notice('Sticky Note: Saved!');
+							});
+					});
+				}
+			})
+		);
 	}
 
 	private async activateView() {
@@ -59,5 +92,26 @@ export default class StickyNotesPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+	}
+
+	async addNote(c: string) {
+		const generateUniqueName = (notes: StickyNotesNote[]) => {
+			const baseName = "Sticky Note";
+			let maxNumber = 0;
+
+			notes.forEach(q => {
+				const match = q.name.match(new RegExp(`${baseName} (\\d+)`));
+				if (match) maxNumber = Math.max(maxNumber, parseInt(match[1]));
+			});
+
+			return `${baseName} ${maxNumber + 1}`;
+		};
+
+		this.settings.notes.push({
+			id: crypto.randomUUID(),
+			name: generateUniqueName(this.settings.notes),
+			content: c
+		});
+		await this.saveSettings();
 	}
 }
