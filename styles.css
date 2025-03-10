@@ -7,7 +7,7 @@ select {
 }
 
 /* 查询项容器 */
-.codeblock-query-item {
+.sticky-notes-note {
     margin-bottom: 1.5rem;
     padding: 0.8rem;
     background-color: var(--background-secondary);
@@ -15,7 +15,7 @@ select {
 }
 
 /* 头部布局 */
-.codeblock-header {
+.sticky-notes-note-header {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -23,25 +23,19 @@ select {
 }
 
 /* 名称输入框容器自适应宽度 */
-.codeblock-header>div:first-child {
+.sticky-notes-note-header>div:first-child {
     flex-grow: 1;
     margin-right: auto;
 }
 
 /* 代码块输入区域 */
-.codeblock-content {
+.sticky-notes-note-content {
     width: 100%;
 }
 
 /* 调整文本域样式 */
-.codeblock-content textarea {
+.sticky-notes-note-content textarea {
     width: 100%;
     resize: vertical;
     min-height: 100px;
-}
-
-/* 分隔线样式 */
-.codeblock-divider {
-    margin: 1rem 0;
-    border-color: var(--background-modifier-border-hover);
 }

@@ -1,59 +1,61 @@
 import { ItemView, WorkspaceLeaf, MarkdownRenderer } from 'obsidian';
-import { CodeBlockViewPlugin } from './main';
+import { StickyNotesPlugin } from './main';
+import { StickyNotesNote } from './data/types';
 
-export const VIEW_TYPE = 'code-block-view';
+export const STICKY_NOTES_SELECTOR_VIEW_TYPE = 'sticky-notes-selector-view';
 
-export class CodeBlockView extends ItemView {
-    plugin: CodeBlockViewPlugin;
+export class StickyNotesSelectorView extends ItemView {
+    plugin: StickyNotesPlugin;
     private selector: HTMLSelectElement;
-    private previewContainer: HTMLElement;
+    private notesContainer: HTMLElement;
 
-    constructor(leaf: WorkspaceLeaf, plugin: CodeBlockViewPlugin) {
+    constructor(leaf: WorkspaceLeaf, plugin: StickyNotesPlugin) {
         super(leaf);
         this.plugin = plugin;
     }
 
-    getViewType() { return VIEW_TYPE; }
-    getDisplayText() { return 'Code Block Preview'; }
+    getViewType() { return STICKY_NOTES_SELECTOR_VIEW_TYPE; }
+    getDisplayText() { return 'Sticky Notes Selector View'; }
+    getIcon() { return "notebook"; }
 
     async onOpen() {
-        console.log(`[CodeBlockView] view onOpen`);
+        console.log(`[StickyNotes] selector view onOpen`);
         const container = this.containerEl.children[1];
         container.empty();
 
         // 创建选择器
-        this.selector = container.createEl("select", { cls: "blocks-selector" });
-        this.previewContainer = container.createDiv("blocks-preview");
+        this.selector = container.createEl("select", { cls: "sticky-notes-selector" });
+        this.notesContainer = container.createDiv("sticky-notes");
 
         this.updateSelector();
-        this.renderPreview();
-        this.selector.addEventListener("change", () => this.renderPreview());
+        this.renderNotes();
+        this.selector.addEventListener("change", () => this.renderNotes());
     }
 
     updateSelector() {
         this.selector.empty();
-        this.plugin.settings.queries.forEach(block => {
+        this.plugin.settings.notes.forEach((note: StickyNotesNote) => {
             this.selector.createEl("option", {
-                text: block.name,
-                value: block.name
+                text: note.name,
+                value: note.name
             });
         });
     }
 
-    async renderPreview() {
-        const selectedBlock = this.plugin.settings.queries.find(
-            b => b.name === this.selector.value
+    async renderNotes() {
+        const selectedNote = this.plugin.settings.notes.find(
+            (note: StickyNotesNote) => note.name === this.selector.value
         );
-        this.previewContainer.empty();
+        this.notesContainer.empty();
 
-        if (selectedBlock) {
+        if (selectedNote) {
             MarkdownRenderer.render(
                 this.app,
-                selectedBlock.code, 
-                this.previewContainer, 
+                selectedNote.content,
+                this.notesContainer,
                 "", // 文件路径（可选）
                 this // 插件实例上下文
-              );
+            );
         }
     }
 }

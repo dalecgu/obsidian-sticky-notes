@@ -1,35 +1,35 @@
 import { Plugin, WorkspaceLeaf } from 'obsidian';
-import { CodeBlockViewSettingTab, DEFAULT_SETTINGS } from './settings';
-import { CodeBlockView, VIEW_TYPE } from './view';
-import { CodeBlockViewSettings } from './data/types';
+import { StickyNotesSettingTab, DEFAULT_SETTINGS } from './settings';
+import { StickyNotesSelectorView, STICKY_NOTES_SELECTOR_VIEW_TYPE } from './view';
+import { StickyNotesSettings } from './data/types';
 
-export default class CodeBlockViewPlugin extends Plugin {
-	settings: CodeBlockViewSettings;
+export default class StickyNotesPlugin extends Plugin {
+	settings: StickyNotesSettings;
 
 	async onload() {
-		console.log("[CodeBlockView] Plugin loading...");
+		console.log("[StickyNotes] Plugin loading...");
 
 		// 加载设置
 		await this.loadSettings();
 
 		// 注册视图
 		this.registerView(
-			VIEW_TYPE,
-			(leaf) => new CodeBlockView(leaf, this)
+			STICKY_NOTES_SELECTOR_VIEW_TYPE,
+			(leaf) => new StickyNotesSelectorView(leaf, this)
 		);
 
 		// 添加侧边栏按钮
-		this.addRibbonIcon('eye', 'Open Code Block View', () => {
+		this.addRibbonIcon('notebook', 'Open Sticky Notes Selector View', () => {
 			this.activateView();
 		});
 
 		// 注册设置标签页
-		this.addSettingTab(new CodeBlockViewSettingTab(this.app, this));
-		console.log("[CodeBlockView] Setting tab registered");
+		this.addSettingTab(new StickyNotesSettingTab(this.app, this));
+		console.log("[StickyNotes] Setting tab registered");
 
 		this.addCommand({
-			id: "open-code-block-view",
-			name: "Open Code Block View",
+			id: "open-sticky-notes-selector-view",
+			name: "Open Sticky Notes Selector View",
 			callback: () => {
 			  this.activateView();
 			},
@@ -39,14 +39,14 @@ export default class CodeBlockViewPlugin extends Plugin {
 	private async activateView() {
 		const { workspace } = this.app;
 		let leaf: WorkspaceLeaf | null = null;
-		const leaves = workspace.getLeavesOfType(VIEW_TYPE);
+		const leaves = workspace.getLeavesOfType(STICKY_NOTES_SELECTOR_VIEW_TYPE);
 
 		if (leaves.length > 0) {
 			leaf = leaves[0];
 		} else {
 			leaf = workspace.getRightLeaf(false);
 			await leaf?.setViewState({
-				type: VIEW_TYPE,
+				type: STICKY_NOTES_SELECTOR_VIEW_TYPE,
 				active: true,
 			});
 		}

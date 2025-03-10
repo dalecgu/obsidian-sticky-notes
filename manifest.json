@@ -1,9 +1,9 @@
 {
-	"id": "code-block-view",
-	"name": "Code Block View",
+	"id": "obsidian-sticky-notes",
+	"name": "Sticky Notes",
 	"version": "0.1.0",
 	"minAppVersion": "0.15.0",
-	"description": "Code Block View",
+	"description": "sticky notes",
 	"author": "dgggg",
 	"isDesktopOnly": true
 }
