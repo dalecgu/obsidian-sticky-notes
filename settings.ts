@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting, Notice, debounce, TextComponent, TextAreaComponent, ButtonComponent } from 'obsidian';
+import { App, PluginSettingTab, Setting, Notice, debounce, TextComponent, TextAreaComponent, ButtonComponent, SearchComponent } from 'obsidian';
 import { StickyNotesPlugin } from './main';
 import { StickyNotesNote, StickyNotesSettings } from './data/types';
 
@@ -9,6 +9,9 @@ export const DEFAULT_SETTINGS: StickyNotesSettings = {
 export class StickyNotesSettingTab extends PluginSettingTab {
     plugin: StickyNotesPlugin;
     private notesContainer: HTMLElement;
+    private searchComponent: SearchComponent;
+    private filterString: string = '';
+    private filteredNotes: number[];
 
     constructor(app: App, plugin: StickyNotesPlugin) {
         super(app, plugin);
@@ -23,22 +26,36 @@ export class StickyNotesSettingTab extends PluginSettingTab {
 
         new Setting(containerEl)
             .setName('Manage Sticky Notes')
-            .setDesc('Add/Edit sticky notes')
+            .addSearch((component: SearchComponent) => {
+                this.searchComponent = component;
+                component.setValue(this.filterString);
+                component.onChange(debounce(
+                    async (value) => {
+                        this.filterString = value;
+                        if (value) {
+                            this.filter();
+                        } else {
+                            this.clearFilter();
+                        }
+                    }, 500
+                ));
+                component.setPlaceholder('Search notes');
+            })
             .addButton(button => button
                 .setButtonText('Add New')
                 .onClick(() => {
                     this.plugin.addNote('');
-                    this.display();
+                    this.clearFilter();
                 }));
 
         this.notesContainer = containerEl.createDiv();
-        this.renderNotes();
+        this.filter();
     }
 
     private renderNotes(): void {
         this.notesContainer.empty();
-        this.plugin.settings.notes.forEach((note: StickyNotesNote) => {
-
+        this.filteredNotes.forEach((index: number) => {
+            const note = this.plugin.settings.notes[index];
             const noteE1 = this.notesContainer.createDiv('sticky-notes-note');
 
             // 头部：名称和删除按钮
@@ -61,7 +78,7 @@ export class StickyNotesSettingTab extends PluginSettingTab {
                 .onClick(async () => {
                     this.plugin.settings.notes = this.plugin.settings.notes.filter((n: StickyNotesNote) => n.id !== note.id);
                     await this.plugin.saveSettings();
-                    this.renderNotes();
+                    this.filter();
                 });
             // 内容输入区域
             const contentE1 = noteE1.createDiv('sticky-notes-note-content');
@@ -76,5 +93,25 @@ export class StickyNotesSettingTab extends PluginSettingTab {
                     await this.plugin.saveSettings();
                 }, 500));
         });
+    }
+
+    private filter() {
+        this.filteredNotes = []
+        this.plugin.settings.notes.forEach((note: StickyNotesNote, index: number) => {
+            if (this.filterString) {
+                if (note.name.contains(this.filterString) || note.content.contains(this.filterString)) {
+                    this.filteredNotes.push(index)
+                }
+            } else {
+                this.filteredNotes.push(index)
+            }
+        })
+        this.renderNotes();
+    }
+
+    private clearFilter() {
+        this.filterString = '';
+        this.searchComponent.setValue(this.filterString);
+        this.filter();
     }
 }

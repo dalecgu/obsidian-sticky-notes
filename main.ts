@@ -107,7 +107,7 @@ export default class StickyNotesPlugin extends Plugin {
 			return `${baseName} ${maxNumber + 1}`;
 		};
 
-		this.settings.notes.push({
+		this.settings.notes.unshift({
 			id: crypto.randomUUID(),
 			name: generateUniqueName(this.settings.notes),
 			content: c
