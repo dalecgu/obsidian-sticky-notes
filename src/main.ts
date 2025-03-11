@@ -1,7 +1,7 @@
 import { Plugin, WorkspaceLeaf, Editor, Notice } from 'obsidian';
-import { StickyNotesSettingTab, DEFAULT_SETTINGS } from './settings';
-import { StickyNotesSelectorView, STICKY_NOTES_SELECTOR_VIEW_TYPE } from './view';
-import { StickyNotesNote, StickyNotesSettings } from './data/types';
+import { StickyNotesSettingTab, DEFAULT_SETTINGS } from 'src/settings/settings';
+import { StickyNotesSelectorView, STICKY_NOTES_SELECTOR_VIEW_TYPE, StickyNotesSingleNoteView, STICKY_NOTES_SINGLE_NOTE_VIEW_TYPE } from 'src/view/view';
+import { StickyNotesNote, StickyNotesSettings } from 'src/data/types';
 
 export default class StickyNotesPlugin extends Plugin {
 	settings: StickyNotesSettings;
@@ -18,22 +18,39 @@ export default class StickyNotesPlugin extends Plugin {
 			(leaf) => new StickyNotesSelectorView(leaf, this)
 		);
 
+		this.addCommand({
+			id: "open-sticky-notes-selector-view",
+			name: "Open Sticky Notes Selector View",
+			callback: () => {
+				this.activateView(STICKY_NOTES_SELECTOR_VIEW_TYPE);
+			},
+		});
+
+		this.settings.notes.forEach((note: StickyNotesNote) => {
+			this.registerView(
+				STICKY_NOTES_SINGLE_NOTE_VIEW_TYPE + note.id,
+				(leaf) => {
+					return new StickyNotesSingleNoteView(leaf, this, note);
+				}
+			);
+
+			this.addCommand({
+				id: "open-sticky-notes-single-note-view-" + note.id,
+				name: "Open Sticky Notes Single Note View " + note.name,
+				callback: () => {
+					this.activateView(STICKY_NOTES_SINGLE_NOTE_VIEW_TYPE + note.id);
+				},
+			});
+		});
+
 		// 添加侧边栏按钮
 		this.addRibbonIcon('notebook', 'Open Sticky Notes Selector View', () => {
-			this.activateView();
+			this.activateView(STICKY_NOTES_SELECTOR_VIEW_TYPE);
 		});
 
 		// 注册设置标签页
 		this.addSettingTab(new StickyNotesSettingTab(this.app, this));
 		console.log("[StickyNotes] Setting tab registered");
-
-		this.addCommand({
-			id: "open-sticky-notes-selector-view",
-			name: "Open Sticky Notes Selector View",
-			callback: () => {
-				this.activateView();
-			},
-		});
 
 		this.addCommand({
 			id: "save-selected-content-as-sticky-note",
@@ -69,17 +86,17 @@ export default class StickyNotesPlugin extends Plugin {
 		);
 	}
 
-	private async activateView() {
+	private async activateView(viewType: string) {
 		const { workspace } = this.app;
 		let leaf: WorkspaceLeaf | null = null;
-		const leaves = workspace.getLeavesOfType(STICKY_NOTES_SELECTOR_VIEW_TYPE);
+		const leaves = workspace.getLeavesOfType(viewType);
 
 		if (leaves.length > 0) {
 			leaf = leaves[0];
 		} else {
 			leaf = workspace.getRightLeaf(false);
 			await leaf?.setViewState({
-				type: STICKY_NOTES_SELECTOR_VIEW_TYPE,
+				type: viewType,
 				active: true,
 			});
 		}

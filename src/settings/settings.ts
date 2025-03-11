@@ -1,6 +1,6 @@
 import { App, PluginSettingTab, Setting, Notice, debounce, TextComponent, TextAreaComponent, ButtonComponent, SearchComponent } from 'obsidian';
-import { StickyNotesPlugin } from './main';
-import { StickyNotesNote, StickyNotesSettings } from './data/types';
+import { StickyNotesPlugin } from 'src/main';
+import { StickyNotesNote, StickyNotesSettings } from 'src/data/types';
 
 export const DEFAULT_SETTINGS: StickyNotesSettings = {
     notes: []

@@ -1,8 +1,9 @@
 import { ItemView, WorkspaceLeaf, MarkdownRenderer } from 'obsidian';
-import { StickyNotesPlugin } from './main';
-import { StickyNotesNote } from './data/types';
+import { StickyNotesPlugin } from 'src/main';
+import { StickyNotesNote } from 'src/data/types';
 
 export const STICKY_NOTES_SELECTOR_VIEW_TYPE = 'sticky-notes-selector-view';
+export const STICKY_NOTES_SINGLE_NOTE_VIEW_TYPE = 'sticky-notes-single-note-view-';
 
 export class StickyNotesSelectorView extends ItemView {
     plugin: StickyNotesPlugin;
@@ -57,5 +58,44 @@ export class StickyNotesSelectorView extends ItemView {
                 this // 插件实例上下文
             );
         }
+    }
+}
+
+export class StickyNotesSingleNoteView extends ItemView {
+    plugin: StickyNotesPlugin;
+    note: StickyNotesNote;
+    private notesContainer: HTMLElement;
+
+    constructor(leaf: WorkspaceLeaf, plugin: StickyNotesPlugin, note: StickyNotesNote) {
+        super(leaf);
+        this.plugin = plugin;
+        this.note = note;
+    }
+
+    getViewType() { return STICKY_NOTES_SINGLE_NOTE_VIEW_TYPE; }
+    getDisplayText() { return this.note.name; }
+    getIcon() { return "sticky-note"; }
+
+    async onOpen() {
+        console.log(`[StickyNotes] single note view onOpen`);
+        const container = this.containerEl.children[1];
+        container.empty();
+
+        // 创建选择器
+        this.notesContainer = container.createDiv("sticky-notes");
+
+        this.renderNotes();
+    }
+
+    async renderNotes() {
+        this.notesContainer.empty();
+
+        MarkdownRenderer.render(
+            this.app,
+            this.note.content,
+            this.notesContainer,
+            "", // 文件路径（可选）
+            this // 插件实例上下文
+        );
     }
 }
