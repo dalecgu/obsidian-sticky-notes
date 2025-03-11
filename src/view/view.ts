@@ -1,4 +1,4 @@
-import { ItemView, WorkspaceLeaf, MarkdownRenderer } from 'obsidian';
+import { ItemView, WorkspaceLeaf, MarkdownRenderer, ViewStateResult } from 'obsidian';
 import { StickyNotesPlugin } from 'src/main';
 import { StickyNotesNote } from 'src/data/types';
 
@@ -63,17 +63,21 @@ export class StickyNotesSelectorView extends ItemView {
 
 export class StickyNotesSingleNoteView extends ItemView {
     plugin: StickyNotesPlugin;
-    note: StickyNotesNote;
+    private note: StickyNotesNote;
     private notesContainer: HTMLElement;
 
-    constructor(leaf: WorkspaceLeaf, plugin: StickyNotesPlugin, note: StickyNotesNote) {
+    constructor(leaf: WorkspaceLeaf, plugin: StickyNotesPlugin) {
         super(leaf);
         this.plugin = plugin;
-        this.note = note;
     }
 
     getViewType() { return STICKY_NOTES_SINGLE_NOTE_VIEW_TYPE; }
-    getDisplayText() { return this.note.name; }
+    getDisplayText() {
+        if (this.note) {
+            return this.note.name;
+        }
+        return "Sticky Notes Single Note View";
+    }
     getIcon() { return "sticky-note"; }
 
     async onOpen() {
@@ -81,10 +85,21 @@ export class StickyNotesSingleNoteView extends ItemView {
         const container = this.containerEl.children[1];
         container.empty();
 
-        // 创建选择器
         this.notesContainer = container.createDiv("sticky-notes");
+    }
 
-        this.renderNotes();
+    getState(): Record<string, unknown> {
+        var state = super.getState();
+        state.note = this.note;
+        return state;
+    }
+
+    async setState(state: Record<string, unknown>, result: ViewStateResult): Promise<void> {
+        this.note = state.note as StickyNotesNote;
+        if (this.note) {
+            this.renderNotes();
+        }
+        await super.setState(state, result);
     }
 
     async renderNotes() {
