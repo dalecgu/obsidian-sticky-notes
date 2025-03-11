@@ -1,7 +1,7 @@
 {
-	"id": "obsidian-sticky-notes",
+	"id": "sticky-notes",
 	"name": "Sticky Notes",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"minAppVersion": "1.8.9",
 	"description": "sticky notes",
 	"author": "dgggg",
