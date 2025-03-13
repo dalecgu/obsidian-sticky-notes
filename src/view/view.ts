@@ -89,7 +89,7 @@ export class StickyNotesSingleNoteView extends ItemView {
     }
 
     getState(): Record<string, unknown> {
-        var state = super.getState();
+        let state = super.getState();
         state.note = this.note;
         return state;
     }

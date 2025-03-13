@@ -86,7 +86,6 @@ export class StickyNotesSettingTab extends PluginSettingTab {
                 .setValue(note.content)
                 .then(textArea => {
                     textArea.inputEl.rows = 8;
-                    textArea.inputEl.style.width = '100%';
                 })
                 .onChange(debounce(async (value) => {
                     note.content = value;
