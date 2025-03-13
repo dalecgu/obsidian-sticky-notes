@@ -20,7 +20,7 @@ export default class StickyNotesPlugin extends Plugin {
 
 		this.addCommand({
 			id: "open-sticky-notes-selector-view",
-			name: "Open Sticky Notes Selector View",
+			name: "Open Selector View",
 			callback: () => {
 				this.activateView(STICKY_NOTES_SELECTOR_VIEW_TYPE);
 			},
@@ -41,7 +41,7 @@ export default class StickyNotesPlugin extends Plugin {
 		this.settings.notes.forEach((note: StickyNotesNote) => {
 			this.addCommand({
 				id: "open-sticky-notes-single-note-view-" + note.id,
-				name: "Open Sticky Notes Single Note View " + note.name,
+				name: "Open Single Note View " + note.name,
 				callback: () => {
 					this.activateSingleNoteView(STICKY_NOTES_SINGLE_NOTE_VIEW_TYPE, note);
 				},
