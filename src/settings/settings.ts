@@ -19,13 +19,11 @@ export class StickyNotesSettingTab extends PluginSettingTab {
     }
 
     display(): void {
-        console.log("[StickyNotes] Rendering settings tab")
-
         const { containerEl } = this;
         containerEl.empty();
 
         new Setting(containerEl)
-            .setName('Manage Sticky Notes')
+            .setName('Manage sticky notes')
             .addSearch((component: SearchComponent) => {
                 this.searchComponent = component;
                 component.setValue(this.filterString);
@@ -42,7 +40,7 @@ export class StickyNotesSettingTab extends PluginSettingTab {
                 component.setPlaceholder('Search notes');
             })
             .addButton(button => button
-                .setButtonText('Add New')
+                .setButtonText('Add new')
                 .onClick(() => {
                     this.plugin.addNote('');
                     this.clearFilter();
@@ -65,7 +63,7 @@ export class StickyNotesSettingTab extends PluginSettingTab {
                 .setValue(note.name)
                 .onChange(debounce(async (value) => {
                     if (!value.trim()) {
-                        new Notice("Name is empty!");
+                        new Notice("Name is empty");
                         return;
                     }
                     note.name = value;

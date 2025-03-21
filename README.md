@@ -1,9 +1,11 @@
-# Obsidian Sticky Notes Plugin
+# Sticky Notes Plugin
 
 English | [中文](https://github.com/dalecgu/obsidian-sticky-notes/blob/master/README_zh.md)
 
 📝 **​Simplify note management, never lose fragmented information**
 A lightweight plugin that digitizes physical sticky notes, helping you quickly save, organize, and retrieve temporary notes.
+
+![screen_shot]("screen_shot.png")
 
 ## Plugin Purpose: Digital Replacement for Paper Sticky Notes
 Upgrade your handwritten notes to:

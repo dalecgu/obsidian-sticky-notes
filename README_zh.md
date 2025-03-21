@@ -1,9 +1,11 @@
-# Obsidian Sticky Notes Plugin
+# Sticky Notes Plugin
 
 [English](https://github.com/dalecgu/obsidian-sticky-notes/blob/master/README.md) | 中文
 
 📝 ​**简化笔记管理，让碎片信息不再丢失**  
 一个将实体便利贴电子化的轻量插件，帮助您快速保存、整理和查找临时笔记。
+
+![screen_shot]("screen_shot.png")
 
 ## 插件意图：纸质便利贴的数字替代方案
 将您随手记录的纸质便利贴升级为：
