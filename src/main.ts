@@ -7,8 +7,6 @@ export default class StickyNotesPlugin extends Plugin {
 	settings: StickyNotesSettings;
 
 	async onload() {
-		console.log("[StickyNotes] Plugin loading...");
-
 		// 加载设置
 		await this.loadSettings();
 
@@ -20,14 +18,14 @@ export default class StickyNotesPlugin extends Plugin {
 
 		this.addCommand({
 			id: "open-sticky-notes-selector-view",
-			name: "Open Selector View",
+			name: "Open selector view",
 			callback: () => {
 				this.activateView(STICKY_NOTES_SELECTOR_VIEW_TYPE);
 			},
 		});
 
 		// 添加侧边栏按钮
-		this.addRibbonIcon('notebook', 'Open Sticky Notes Selector View', () => {
+		this.addRibbonIcon('notebook', 'Open sticky notes selector view', () => {
 			this.activateView(STICKY_NOTES_SELECTOR_VIEW_TYPE);
 		});
 
@@ -41,7 +39,7 @@ export default class StickyNotesPlugin extends Plugin {
 		this.settings.notes.forEach((note: StickyNotesNote) => {
 			this.addCommand({
 				id: "open-sticky-notes-single-note-view-" + note.id,
-				name: "Open Single Note View " + note.name,
+				name: "Open single note view " + note.name,
 				callback: () => {
 					this.activateSingleNoteView(STICKY_NOTES_SINGLE_NOTE_VIEW_TYPE, note);
 				},
@@ -50,17 +48,16 @@ export default class StickyNotesPlugin extends Plugin {
 
 		// 注册设置标签页
 		this.addSettingTab(new StickyNotesSettingTab(this.app, this));
-		console.log("[StickyNotes] Setting tab registered");
 
 		this.addCommand({
 			id: "save-selected-content-as-sticky-note",
-			name: "Save Selected Content As Sticky Note",
+			name: "Save selected content as sticky note",
 			editorCheckCallback: (checking: Boolean, editor: Editor) => {
 				const selection = editor.getSelection();
 				if (selection) {
 					if (!checking) {
 						this.addNote(selection)
-						new Notice('Sticky Note: Saved!');
+						new Notice('Saved');
 					}
 					return true;
 				}
@@ -74,11 +71,11 @@ export default class StickyNotesPlugin extends Plugin {
 				if (selection && selection.trim().length > 0) {
 					menu.addItem((item) => {
 						item
-							.setTitle("Save Selected Content As Sticky Note")
+							.setTitle("Save selected content as sticky note")
 							.setIcon("save")
 							.onClick(async () => {
 								await this.addNote(selection);
-								new Notice('Sticky Note: Saved!');
+								new Notice('Saved');
 							});
 					});
 				}

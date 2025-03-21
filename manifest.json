@@ -3,7 +3,7 @@
 	"name": "Sticky Notes",
 	"version": "0.1.2",
 	"minAppVersion": "1.8.9",
-	"description": "sticky notes",
+	"description": "A lightweight plugin that digitizes physical sticky notes, helping you quickly save, organize, and retrieve temporary notes.",
 	"author": "dgggg",
 	"isDesktopOnly": true
 }

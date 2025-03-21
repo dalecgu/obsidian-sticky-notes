@@ -16,11 +16,10 @@ export class StickyNotesSelectorView extends ItemView {
     }
 
     getViewType() { return STICKY_NOTES_SELECTOR_VIEW_TYPE; }
-    getDisplayText() { return 'Sticky Notes Selector View'; }
+    getDisplayText() { return 'Sticky notes'; }
     getIcon() { return "notebook"; }
 
     async onOpen() {
-        console.log(`[StickyNotes] selector view onOpen`);
         const container = this.containerEl.children[1];
         container.empty();
 
@@ -76,12 +75,11 @@ export class StickyNotesSingleNoteView extends ItemView {
         if (this.note) {
             return this.note.name;
         }
-        return "Sticky Notes Single Note View";
+        return "Sticky note";
     }
     getIcon() { return "sticky-note"; }
 
     async onOpen() {
-        console.log(`[StickyNotes] single note view onOpen`);
         const container = this.containerEl.children[1];
         container.empty();
 
