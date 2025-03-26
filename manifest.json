@@ -1,9 +1,9 @@
 {
 	"id": "sticky-notes",
 	"name": "Sticky Notes",
-	"version": "0.1.3",
+	"version": "0.1.4",
 	"minAppVersion": "1.8.9",
-	"description": "A lightweight plugin that digitizes physical sticky notes, helping you quickly save, organize, and retrieve temporary notes.",
+	"description": "Digitize physical sticky notes to effortlessly capture, organize, and access temporary notes.",
 	"author": "dgggg",
 	"isDesktopOnly": true
 }
