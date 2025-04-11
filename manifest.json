@@ -1,7 +1,7 @@
 {
-	"id": "sticky-notes",
-	"name": "Sticky Notes",
-	"version": "0.1.4",
+	"id": "digital-sticky-notes",
+	"name": "Digital Sticky Notes",
+	"version": "0.1.5",
 	"minAppVersion": "1.8.9",
 	"description": "Digitize physical sticky notes to effortlessly capture, organize, and access temporary notes.",
 	"author": "dgggg",

@@ -1,4 +1,4 @@
-# Sticky Notes Plugin
+# Digital Sticky Notes Plugin
 
 English | [中文](https://github.com/dalecgu/obsidian-sticky-notes/blob/master/README_zh.md)
 
